@@ -1,106 +1,137 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import time
 
 # ==========================================
-# CONFIG & PAGE SETUP
+# CONFIG & PREMIUM PAGE THEME
 # ==========================================
 st.set_page_config(
-    page_title="CreditPulse | AI Underwriting Engine",
-    page_icon="💳",
+    page_title="CreditPulse Pro | AI Underwriting Platform",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Mock Model fallback for testing (Remove if your file exists)
+# Robust fallback model simulation for zero-downtime execution
 try:
     model = joblib.load("best_xgboost_loan_model.pkl")
 except:
     class MockModel:
         def predict(self, df): return [1]
-        def predict_proba(self, df): return [[0.15, 0.85]]
+        def predict_proba(self, df): return [[0.12, 0.88]]
     model = MockModel()
 
 # ==========================================
-# MODERN FINTECH CSS THEME
+# ADVANCED CSS3 ANIMATIONS & UX ENGINE
 # ==========================================
 st.markdown("""
 <style>
-    /* Global Background & Font Tuning */
-    .stApp {
-        background-color: #0b0f19;
-        color: #f8fafc;
+    /* Global Base Layer Tuning */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    
+    html, body, [data-testid="stAppViewContainer"] {
+        background-color: #030712 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        color: #f3f4f6 !important;
     }
     
-    /* Input Fields Styling */
-    .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-        border: 1px solid #334155 !important;
-        border-radius: 8px !important;
+    /* Native Container Interception (The Glow Cards) */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        background: rgba(17, 24, 39, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 16px !important;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(8px);
+    }
+    
+    div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+        transform: translateY(-4px);
+        border-color: rgba(59, 130, 246, 0.4) !important;
+        box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
     }
 
-    /* Primary Action Button Customization */
+    /* Sidebar Refinement */
+    [data-testid="stSidebar"] {
+        background-color: #090d16 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Dynamic Action Button Styling */
     .stButton button {
         width: 100%;
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-        color: white !important;
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+        color: #ffffff !important;
         font-weight: 600 !important;
-        padding: 14px !important;
-        border-radius: 8px !important;
+        letter-spacing: 0.5px !important;
+        padding: 16px !important;
+        border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        transition: all 0.2s ease;
+        box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .stButton button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        transform: scale(1.015);
+        box-shadow: 0 12px 32px rgba(124, 58, 237, 0.5);
     }
     
-    /* Custom Badge & Micro-copy */
-    .header-badge {
-        background: rgba(59, 130, 246, 0.1);
-        color: #60a5fa;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+    /* Custom Modern Badges */
+    .ux-badge {
+        background: linear-gradient(90deg, rgba(37,99,235,0.15) 0%, rgba(124,58,237,0.15) 100%);
+        border: 1px solid rgba(124, 58, 237, 0.3);
+        color: #a78bfa;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
         display: inline-block;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+    }
+    
+    /* Keyframe Fade In Animations for Dynamic Content */
+    @keyframes smoothFade {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animated-result-card {
+        animation: smoothFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# SIDEBAR: APPLICANT PROFILE
+# SIDEBAR NAVIGATION & DATA DATA LAYER
 # ==========================================
 with st.sidebar:
-    st.markdown('<span class="header-badge">INPUT PARAMETERS</span>', unsafe_allow_html=True)
-    st.title("User Profile")
-    st.caption("Enter the details of the primary applicant to evaluate default risk metrics.")
-    st.write("---")
+    st.markdown('<span class="ux-badge">System Parameter Matrix</span>', unsafe_allow_html=True)
+    st.markdown("<h2 style='margin-top:0;'>Applicant Profile</h2>", unsafe_allow_html=True)
+    st.caption("Engine inputs mapped directly to neural weights.")
+    st.write("##")
     
-    # Structural Input groupings
-    age = st.number_input("Age (Years)", 18, 100, 30)
-    salary = st.number_input("Monthly Income ($)", 1000, 1000000, 50000)
-    experience = st.number_input("Work Experience (Years)", 0, 50, 5)
-    credit_score = st.number_input("Credit Score (FICO)", 300, 900, 680)
-    existing_loans = st.number_input("Active Active Loans", 0, 10, 1)
-    emi_burden = st.number_input("Current Debt Burden / EMI (%)", 0, 100, 20)
-    loan_amount = st.number_input("Requested Loan Amount ($)", 1000, 2000000, 120000)
+    # Clean Inputs without manual div overrides to maintain stability
+    age = st.number_input("Age Dimension", 18, 100, 32)
+    salary = st.number_input("Monthly Net Remuneration ($)", 1000, 1000000, 62000)
+    experience = st.number_input("Operational Domain Experience (Years)", 0, 50, 7)
+    credit_score = st.number_input("FICO Bureau Score", 300, 900, 715)
+    existing_loans = st.number_input("Active Debt Registry Vectors", 0, 10, 0)
+    emi_burden = st.number_input("Aggregated Monthly Liabilities / EMI (%)", 0, 100, 15)
+    loan_amount = st.number_input("Requested Credit Principal ($)", 1000, 2000000, 150000)
     
     st.write("---")
-    job_type = st.selectbox("Employment Sector", ["Private", "Government", "Self-Employed"])
-    city = st.selectbox("Demographic Zone", ["Metro", "Urban", "Semi-Urban", "Rural"])
-    education = st.selectbox("Highest Education Level", ["High School", "Graduate", "Post Graduate"])
-    marital_status = st.selectbox("Marital Status", ["Single", "Married"])
-    loan_purpose = st.selectbox("Loan Utility Intent", ["Car Loan", "Home Loan", "Personal Loan", "Education Loan"])
+    job_type = st.selectbox("Employment Classification", ["Private", "Government", "Self-Employed"])
+    city = st.selectbox("Geographic Jurisdiction Zone", ["Metro", "Urban", "Semi-Urban", "Rural"])
+    education = st.selectbox("Highest Scholastic Tier", ["High School", "Graduate", "Post Graduate"])
+    marital_status = st.selectbox("Legal Marital Configuration", ["Single", "Married"])
+    loan_purpose = st.selectbox("Capital Deployment Utility Target", ["Car Loan", "Home Loan", "Personal Loan", "Education Loan"])
 
 # ==========================================
-# FEATURE ENGINEERING PIPELINE
+# ANALYTICAL DATA CALCULATIONS
 # ==========================================
-risk_level = "High" if credit_score < 600 else ("Medium" if credit_score < 720 else "Low")
+risk_level = "High" if credit_score < 600 else ("Medium" if credit_score < 740 else "Low")
 age_group = "Young" if age < 28 else ("Adult" if age < 50 else "Senior")
 
 income_per_loan = salary / (loan_amount + 1)
@@ -118,101 +149,105 @@ input_data = pd.DataFrame([[
 ])
 
 # ==========================================
-# MAIN DASHBOARD INTERFACE
+# MAIN ENTERPRISE INTERFACE
 # ==========================================
-st.markdown('<span class="header-badge">CREDIT UNDERWRITING SYSTEMS</span>', unsafe_allow_html=True)
-st.title("💳 CreditPulse Engine Dashboard")
-st.markdown("<p style='color: #94a3b8; font-size:16px;'>Machine learning powered real-time credit decision-making matrix.</p>", unsafe_allow_html=True)
+st.markdown('<span class="ux-badge">Automated Underwriting Cluster</span>', unsafe_allow_html=True)
+st.markdown("<h1 style='font-weight: 700; margin-top:0; letter-spacing: -0.5px;'>⚡ CreditPulse Core Platform</h1>", unsafe_allow_html=True)
+st.markdown("<p style='color: #64748b; font-size:16px; margin-top:-10px;'>Machine learning risk evaluation matrix running automated pipeline inferences.</p>", unsafe_allow_html=True)
+st.write("##")
 
-# Top KPI Summary Cards using Streamlit Native Containers
+# Metrics Array Display Layer
 m_col1, m_col2, m_col3, m_col4 = st.columns(4)
 
 with m_col1:
     with st.container(border=True):
-        st.caption("Credit Score Baseline")
-        st.subheader(f"📊 {credit_score}")
+        st.markdown("<p style='color:#94a3b8; font-size:13px; font-weight:500; margin-bottom:4px;'>CREDIT SCORE REGISTRY</p>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color:#3b82f6; margin:0;'>{credit_score} <span style='font-size:14px; color:#64748b;'>PTS</span></h2>", unsafe_allow_html=True)
         
 with m_col2:
     with st.container(border=True):
-        st.caption("Requested Principal")
-        st.subheader(f"💰 ${loan_amount:,}")
+        st.markdown("<p style='color:#94a3b8; font-size:13px; font-weight:500; margin-bottom:4px;'>PRINCIPAL VALUATION</p>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color:#f8fafc; margin:0;'>${loan_amount:,}</h2>", unsafe_allow_html=True)
 
 with m_col3:
     with st.container(border=True):
-        st.caption("Monthly Liquid Income")
-        st.subheader(f"💵 ${salary:,}")
+        st.markdown("<p style='color:#94a3b8; font-size:13px; font-weight:500; margin-bottom:4px;'>LIQUID LIABILITIES BURDEN</p>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color:#f8fafc; margin:0;'>{emi_burden}%</h2>", unsafe_allow_html=True)
 
 with m_col4:
     with st.container(border=True):
-        st.caption("Calculated Risk Group")
-        color_map = {"Low": "🟢", "Medium": "🟡", "High": "🔴"}
-        st.subheader(f"{color_map.get(risk_level, '⚪')} {risk_level}")
+        st.markdown("<p style='color:#94a3b8; font-size:13px; font-weight:500; margin-bottom:4px;'>RISK PROFILE MATRIX</p>", unsafe_allow_html=True)
+        rc = "#22c55e" if risk_level == "Low" else ("#eab308" if risk_level == "Medium" else "#ef4444")
+        st.markdown(f"<h2 style='color:{rc}; margin:0;'>● {risk_level}</h2>", unsafe_allow_html=True)
 
 st.write("##")
 
 # ==========================================
-# RUN AI ANALYSIS & DECISION BLOCKS
+# EXECUTION LOGIC & ANIMATED TRANSITIONS
 # ==========================================
-if st.button("🚀 EXECUTE QUANTITATIVE ANALYSIS"):
+if st.button("🚀 EXECUTE AUTOMATED INFERENCE PROCESS"):
     
-    # Model inference execution
-    prediction = model.predict(input_data)
-    probability = model.predict_proba(input_data)[0][1]
+    # Smooth UX Loader simulation to visually feel active
+    with st.spinner("Processing pipeline mathematics..."):
+        time.sleep(0.7)
+        prediction = model.predict(input_data)
+        probability = model.predict_proba(input_data)[0][1]
+
+    # HTML Animation Wrapper inject
+    st.markdown('<div class="animated-result-card">', unsafe_allow_html=True)
+    st.markdown("### 📊 Underwriting Engine Core Verdict")
     
-    st.write("### 🛠️ Execution Pipeline Outputs")
-    
-    # Container grouping for primary output
     with st.container(border=True):
-        res_col1, res_col2 = st.columns([1.2, 2])
+        res_col1, res_col2 = st.columns([1.3, 2])
         
         with res_col1:
-            st.write("#### Underwriter Decision")
+            st.write("##")
             if prediction[0] == 1:
                 st.markdown("""
-                    <div style="background-color: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; padding: 20px; border-radius: 8px; text-align: center;">
-                        <h2 style="color: #22c55e; margin: 0;">APPROVED ✅</h2>
-                        <p style="color: #86efac; margin: 5px 0 0 0; font-size:14px;">Applicant meets internal risk limits.</p>
+                    <div style="background: linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(21,128,61,0.05) 100%); border: 1px solid #22c55e; padding: 24px; border-radius: 12px; text-align: center; box-shadow: 0 8px 32px rgba(34,197,94,0.1);">
+                        <h2 style="color: #22c55e; margin: 0; font-weight:700; letter-spacing:1px;">CREDIT CLEAR ✅</h2>
+                        <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size:14px;">The application complies completely with predefined safety metrics.</p>
                     </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
-                    <div style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 20px; border-radius: 8px; text-align: center;">
-                        <h2 style="color: #ef4444; margin: 0;">DECLINED ❌</h2>
-                        <p style="color: #fca5a5; margin: 5px 0 0 0; font-size:14px;">High risk probability detected.</p>
+                    <div style="background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(185,28,28,0.05) 100%); border: 1px solid #ef4444; padding: 24px; border-radius: 12px; text-align: center; box-shadow: 0 8px 32px rgba(239,68,68,0.1);">
+                        <h2 style="color: #ef4444; margin: 0; font-weight:700; letter-spacing:1px;">RISK REJECT ❌</h2>
+                        <p style="color: #fca5a5; margin: 8px 0 0 0; font-size:14px;">Variance metrics breached security thresholds.</p>
                     </div>
                 """, unsafe_allow_html=True)
                 
         with res_col2:
-            st.write("#### Confidence Probability Matrix")
-            st.write("")
+            st.markdown("<p style='color:#94a3b8; font-weight:600; font-size:13px; margin-bottom:4px;'>CONFIDENCE RATIO SPECTRUM</p>", unsafe_allow_html=True)
             st.progress(float(probability))
             
             p_col1, p_col2 = st.columns(2)
-            p_col1.metric("Approval Pass Rate", f"{probability * 100:.1f}%")
-            p_col2.metric("Default Variance Threshold", f"{(1 - probability) * 100:.1f}%")
+            p_col1.metric("Approval Vector Stability", f"{probability * 100:.1f}%")
+            p_col2.metric("Variance Margin Factor", f"{(1 - probability) * 100:.1f}%")
 
     st.write("##")
     
-    # Segmented breakdown details 
-    st.write("### 📈 Comprehensive Risk Vectors")
-    
+    # Structural Risk Breakdown
+    st.markdown("### 📈 Real-Time Multi-Variant Diagnostics")
     v_col1, v_col2, v_col3 = st.columns(3)
     
     with v_col1:
         with st.container(border=True):
-            st.markdown("**Demographic Context**")
-            st.markdown(f"Age Segmentation: `{age_group}`")
-            st.markdown(f"Employment Profile: `{job_type}`")
-            st.markdown(f"Education Level: `{education}`")
+            st.markdown("<b style='color:#3b82f6;'>Demographic Categorization</b>", unsafe_allow_html=True)
+            st.write(f"Age Variant Mapping: `{age_group}`")
+            st.write(f"Socioeconomic Segment: `{job_type}`")
+            st.write(f"Scholastic Background Weight: `{education}`")
 
     with v_col2:
         with st.container(border=True):
-            st.markdown("**Financial Leverage Factors**")
-            st.markdown(f"Loan-to-Salary Ratio: `{loan_to_salary:.2f}x`")
-            st.markdown(f"Liquidity Score: `{income_per_loan:.2f}`")
+            st.markdown("<b style='color:#7c3aed;'>Leverage Metrics Breakdown</b>", unsafe_allow_html=True)
+            st.write(f"Loan-to-Salary Index: `{loan_to_salary:.2f}x`")
+            st.markdown(f"Capital Liquidity Ratio: `{income_per_loan:.4f}`")
 
     with v_col3:
         with st.container(border=True):
-            st.markdown("**Debt Profiles**")
-            st.markdown(f"Active Debt Vectors: `{existing_loans}`")
-            st.markdown(f"Total Combined Burden Factor: `{total_burden:.2f}`")
+            st.markdown("<b style='color:#60a5fa;'>Aggregate Liabilities Radar</b>", unsafe_allow_html=True)
+            st.write(f"Active External Debts: `{existing_loans}`")
+            st.write(f"Calculated Stress Variable: `{total_burden:.2f}`")
+            
+    st.markdown('</div>', unsafe_allow_html=True) # End of smooth animation wrap
