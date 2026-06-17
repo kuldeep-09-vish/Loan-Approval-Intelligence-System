@@ -3,49 +3,109 @@ import pandas as pd
 import joblib
 
 # =========================
-# PAGE CONFIG
+# CONFIG
 # =========================
-st.set_page_config(
-    page_title="Loan Intelligence System",
-    page_icon="💳",
-    layout="wide"
-)
+st.set_page_config(page_title="Loan AI System", layout="wide")
+
+model = joblib.load("best_xgboost_loan_model.pkl")
 
 # =========================
-# LOAD MODEL
+# CUSTOM CSS (UI UPGRADE)
 # =========================
-model = joblib.load("best_xgboost_loan_model.pkl")
+st.markdown("""
+<style>
+
+html, body, [class*="css"] {
+    height: 100%;
+    background: #0f172a;
+    color: white;
+}
+
+/* Full height app */
+.main {
+    background: #0f172a;
+}
+
+/* Glass Card */
+.card {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    transition: 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+
+/* Title */
+.title {
+    text-align: center;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+/* Metric box */
+.metric-box {
+    background: rgba(255,255,255,0.08);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Button */
+.stButton button {
+    width: 100%;
+    background: #3b82f6;
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.stButton button:hover {
+    background: #2563eb;
+    transform: scale(1.02);
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # =========================
 # HEADER
 # =========================
-st.markdown("""
-    <div style="text-align:center;">
-        <h1>Loan Approval Intelligence System</h1>
-        <p>AI-powered credit risk analysis for instant loan decisioning</p>
-    </div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="title">💳 Loan Approval Intelligence System</div>', unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>AI-powered credit risk engine</p>", unsafe_allow_html=True)
 
 st.divider()
 
 # =========================
-# SIDEBAR INPUT
+# SIDEBAR INPUT (CARD STYLE)
 # =========================
-st.sidebar.header("Applicant Details")
+with st.sidebar:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.header("Applicant Profile")
 
-age = st.sidebar.number_input("Age", 18, 100, 30)
-salary = st.sidebar.number_input("Monthly Salary", 1000, 1000000, 50000)
-experience = st.sidebar.number_input("Experience (Years)", 0, 50, 5)
-credit_score = st.sidebar.number_input("Credit Score", 300, 900, 600)
-existing_loans = st.sidebar.number_input("Existing Loans", 0, 10, 1)
-emi_burden = st.sidebar.number_input("EMI Burden (%)", 0, 100, 20)
-loan_amount = st.sidebar.number_input("Loan Amount", 1000, 2000000, 100000)
+    age = st.number_input("Age", 18, 100, 30)
+    salary = st.number_input("Monthly Salary", 1000, 1000000, 50000)
+    experience = st.number_input("Experience (Years)", 0, 50, 5)
+    credit_score = st.number_input("Credit Score", 300, 900, 600)
+    existing_loans = st.number_input("Existing Loans", 0, 10, 1)
+    emi_burden = st.number_input("EMI Burden (%)", 0, 100, 20)
+    loan_amount = st.number_input("Loan Amount", 1000, 2000000, 100000)
 
-job_type = st.sidebar.selectbox("Job Type", ["Private", "Government", "Self-Employed"])
-city = st.sidebar.selectbox("City Type", ["Metro", "Urban", "Semi-Urban", "Rural"])
-education = st.sidebar.selectbox("Education", ["High School", "Graduate", "Post Graduate"])
-marital_status = st.sidebar.selectbox("Marital Status", ["Single", "Married"])
-loan_purpose = st.sidebar.selectbox("Loan Purpose", ["Car Loan", "Home Loan", "Personal Loan", "Education Loan"])
+    job_type = st.selectbox("Job Type", ["Private", "Government", "Self-Employed"])
+    city = st.selectbox("City Type", ["Metro", "Urban", "Semi-Urban", "Rural"])
+    education = st.selectbox("Education", ["High School", "Graduate", "Post Graduate"])
+    marital_status = st.selectbox("Marital Status", ["Single", "Married"])
+    loan_purpose = st.selectbox("Loan Purpose", ["Car Loan", "Home Loan", "Personal Loan", "Education Loan"])
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
 # FEATURE ENGINEERING
@@ -62,7 +122,7 @@ income_per_loan = salary / (loan_amount + 1)
 loan_to_salary = loan_amount / (salary + 1)
 total_burden = existing_loans + emi_burden
 
-input_data = pd.DataFrame([[
+input_data = pd.DataFrame([[ 
     age, salary, experience, credit_score,
     existing_loans, emi_burden, loan_amount,
     job_type, city, education, marital_status,
@@ -77,56 +137,59 @@ input_data = pd.DataFrame([[
 ])
 
 # =========================
-# MAIN SECTION
+# TOP METRICS
 # =========================
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric("Credit Score", credit_score)
+    st.markdown('<div class="metric-box">Credit Score<br><h2>{}</h2></div>'.format(credit_score), unsafe_allow_html=True)
 
 with col2:
-    st.metric("Loan Amount", f"{loan_amount}")
+    st.markdown('<div class="metric-box">Loan Amount<br><h2>{}</h2></div>'.format(loan_amount), unsafe_allow_html=True)
 
 with col3:
-    st.metric("Salary", f"{salary}")
+    st.markdown('<div class="metric-box">Salary<br><h2>{}</h2></div>'.format(salary), unsafe_allow_html=True)
 
 st.divider()
 
 # =========================
-# PREDICTION
+# BUTTON
 # =========================
-if st.button("Run AI Analysis", use_container_width=True):
+if st.button("🚀 Run AI Analysis"):
 
     prediction = model.predict(input_data)
     probability = model.predict_proba(input_data)[0][1]
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.subheader("Decision Output")
 
-    left, right = st.columns(2)
+    colA, colB = st.columns(2)
 
-    with left:
+    with colA:
         if prediction[0] == 1:
-            st.success("Loan Approved")
-            status = "Approved"
+            st.success("Loan Approved ✅")
         else:
-            st.error("Loan Rejected")
-            status = "Rejected"
+            st.error("Loan Rejected ❌")
 
-    with right:
+    with colB:
         st.write("Approval Confidence")
         st.progress(float(probability))
+        st.metric("Probability", f"{probability:.2f}")
 
-        st.metric("Probability Score", f"{probability:.2f}")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.divider()
 
     # =========================
-    # RISK INSIGHTS PANEL
+    # RISK PANEL
     # =========================
-    st.subheader("Risk Analysis Summary")
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("Risk Analysis")
 
-    st.write(f"- Risk Level: **{risk_level}**")
-    st.write(f"- Age Group: **{age_group}**")
-    st.write(f"- Loan-to-Salary Ratio: **{loan_to_salary:.2f}**")
-    st.write(f"- Income per Loan: **{income_per_loan:.2f}**")
-    st.write(f"- Total Burden Score: **{total_burden}**")
+    st.write(f"Risk Level: **{risk_level}**")
+    st.write(f"Age Group: **{age_group}**")
+    st.write(f"Loan-to-Salary: **{loan_to_salary:.2f}**")
+    st.write(f"Income per Loan: **{income_per_loan:.2f}**")
+    st.write(f"Total Burden: **{total_burden}**")
+
+    st.markdown('</div>', unsafe_allow_html=True)
